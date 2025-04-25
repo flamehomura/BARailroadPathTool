@@ -109,7 +109,7 @@ class GridMap:
 
         return goals
 
-    def shortest_path(self, path_limits, get_bonus):
+    def calc_path(self, path_limits, get_bonus, use_shortest):
         start_pos = self.get_next_pos(self.start_coord)
         if start_pos is None:
             return None
@@ -121,9 +121,9 @@ class GridMap:
         if get_bonus:
             fixed_grids |= set(self.poi_grid_map.keys())
 
-        return self.get_path_from_to(start_pos, self.goal_coord, cost, counter, path_costs, fixed_grids, paths, path_limits)
+        return self.get_path_from_to(start_pos, self.goal_coord, use_shortest, cost, counter, path_costs, fixed_grids, paths, path_limits)
 
-    def get_path_from_to(self, from_pos, to_pos, cost, counter, path_costs, fixed_grids, paths, path_limits):
+    def get_path_from_to(self, from_pos, to_pos, shortest, cost, counter, path_costs, fixed_grids, paths, path_limits):
         if from_pos is None:
             return None
 
@@ -132,6 +132,10 @@ class GridMap:
 
         heap = [(cost, next(counter), from_pos, path_costs, frozenset(), paths, path_set)]
         visited_state = set()
+        best_path = None
+        best_used = 0
+        if shortest:
+            best_used = path_limits[0] + path_limits[1] + path_limits[2]
 
         while heap:
             cost, _, current, path_cost, grids, path, path_coord = heapq.heappop(heap)
@@ -141,7 +145,15 @@ class GridMap:
             visited_state.add(current_state)
 
             if current == to_pos and grids == fixed_grids:
-                return cost, path_cost, path
+                used_total = path_cost[1] + path_cost[2] + path_cost[3]
+                if shortest and used_total < best_used:
+                    best_used = used_total
+                    best_path = (cost, path_cost.copy(), path)
+
+                elif not shortest and used_total > best_used:
+                    best_used = used_total
+                    best_path = (cost, path_cost.copy(), path)
+                continue
 
             # print(f"Current: {current} path_costs: {path_cost} path: {path}")
             for next_pos, path_type in self.get_valid_goal(current):
@@ -152,8 +164,13 @@ class GridMap:
                         continue
                     new_path_cost = path_cost.copy()
                     new_path_cost[path_type] += 1
-                    new_cost = cost + int((new_path_cost[path_type] / path_limits[path_type - 1]) ** 2 * 500)
-                    # new_cost = cost + 1
+                    new_cost = cost
+                    if shortest:
+                        new_cost += int((new_path_cost[path_type] / path_limits[path_type - 1]) ** 2 * 500)
+                    else:
+                        new_cost -= int((new_path_cost[path_type] / path_limits[path_type - 1]) ** 2 * 500)
+                    if (current.x, current.y) in self.poi_grid_map:
+                        new_cost -= 1000
                     new_path_coord = path_coord.copy()
                     new_path_coord.add((next_pos.x, next_pos.y))
 
@@ -174,4 +191,5 @@ class GridMap:
 
                     # print(f"Next: {next_pos}")
                     heapq.heappush(heap, (new_cost, next(counter), next_pos, new_path_cost, new_grids, path + [next_pos], new_path_coord))
-        return None
+
+        return best_path

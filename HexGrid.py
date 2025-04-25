@@ -34,6 +34,8 @@ class HexGridPanel:
     path_3_spin = None
     path_3_spin_value = None
 
+    shortest_checkbox = None
+    shortest_check_value = None
     bonus_checkbox = None
     bonus_check_value = None
 
@@ -97,18 +99,22 @@ class HexGridPanel:
         self.path_3_spin = tk.Spinbox(self.control_panel, from_=0, to=100, increment=1, width=7, textvariable=self.path_3_spin_value)
         self.path_3_spin.grid(row=6, column=0, pady=5)
 
+        self.shortest_check_value = tk.BooleanVar(value=True)
+        self.shortest_checkbox = tk.Checkbutton(self.control_panel, text="Shortest Path", variable=self.shortest_check_value)
+        self.shortest_checkbox.grid(row=7, column=0, pady=20)
+
         self.bonus_check_value = tk.BooleanVar(value=False)
         self.bonus_checkbox = tk.Checkbutton(self.control_panel, text="Get All Bonus!", variable=self.bonus_check_value)
-        self.bonus_checkbox.grid(row=7, column=0, pady=20)
+        self.bonus_checkbox.grid(row=8, column=0, pady=20)
 
         self.draw_button = tk.Button(self.control_panel, text="Build Path", command=self.build_path)
-        self.draw_button.grid(row=8, column=0, pady=20)
-
-        self.draw_button = tk.Button(self.control_panel, text="Reset Level", command=self.reset_hex)
         self.draw_button.grid(row=9, column=0, pady=20)
 
+        self.draw_button = tk.Button(self.control_panel, text="Reset Level", command=self.reset_hex)
+        self.draw_button.grid(row=10, column=0, pady=20)
+
         self.result_label = tk.Label(self.control_panel, text="", font=("Arial", 20, "bold"), fg="black")
-        self.result_label.grid(row=10, column=0, pady=10)
+        self.result_label.grid(row=11, column=0, pady=10)
 
         self.draw_grids(None)
 
@@ -169,18 +175,19 @@ class HexGridPanel:
         grid_map = GridMap(self.level_grids)
         path_limits = [self.path_1_spin_value.get(), self.path_2_spin_value.get(), self.path_3_spin_value.get()]
         get_bonus = self.bonus_check_value.get()
-        shortest_path = grid_map.shortest_path(path_limits, get_bonus)
-        if shortest_path is not None:
+        shortest = self.shortest_check_value.get()
+        calced_path = grid_map.calc_path(path_limits, get_bonus, shortest)
+        if calced_path is not None:
             self.result_label.config(text="Success", fg="green")
-            print(shortest_path)
+            print(calced_path)
             self.path_img_refs.clear()
-            for i, path in enumerate(shortest_path[2]):
+            for i, path in enumerate(calced_path[2]):
                 if (path.x, path.y) in grid_map.fixed_grid_map:
                     continue
-                if i == len(shortest_path[2]) - 1:
+                if i == len(calced_path[2]) - 1:
                     break
                 else:
-                    next_path = shortest_path[2][i + 1]
+                    next_path = calced_path[2][i + 1]
                 path_type = GridMap.get_path_type(path, next_path)
                 if path_type > 0:
                     rot = path.side_idx
@@ -194,9 +201,9 @@ class HexGridPanel:
                         self.path_img_refs.append(photo)
                         print(f"{path} type {path_type}")
 
-            self.path_1_spin_value.set(shortest_path[1][1])
-            self.path_2_spin_value.set(shortest_path[1][2])
-            self.path_3_spin_value.set(shortest_path[1][3])
+            self.path_1_spin_value.set(calced_path[1][1])
+            self.path_2_spin_value.set(calced_path[1][2])
+            self.path_3_spin_value.set(calced_path[1][3])
 
         else:
             self.result_label.config(text="Failed", fg="red")
