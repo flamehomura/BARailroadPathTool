@@ -39,8 +39,8 @@ class HexGridPanel:
 
     result_label = None
 
-    hexes_json_file_name = "hexes.json"
-    level_json_file_name = "levels.json"
+    hexes_json_file_name = "config/hexes.json"
+    level_json_file_name = "config/levels.json"
 
     hex_imgs : dict[int, Image] = {}
     level_keys = []

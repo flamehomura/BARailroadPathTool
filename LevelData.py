@@ -8,7 +8,7 @@ class GridData:
 
 class GridLevel:
 
-    json_file_name = "levels.json"
+    json_file_name = "config/levels.json"
     paths : list[int] = []
     grids : list[list[GridData]] = []
 
