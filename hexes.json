@@ -1,0 +1,13 @@
+[
+  {"type": 0, "img": "hex.png"},
+  {"type": 1, "img": "hex_path_1.png"},
+  {"type": 2, "img": "hex_path_2.png"},
+  {"type": 3, "img": "hex_path_3.png"},
+  {"type": 4, "img": "hex_start.png"},
+  {"type": 5, "img": "hex_goal.png"},
+  {"type": 6, "img": "hex_dis.png"},
+  {"type": 7, "img": "hex_poi.png"},
+  {"type": -1, "img": "hex_path_1_i.png"},
+  {"type": -2, "img": "hex_path_2_i.png"},
+  {"type": -3, "img": "hex_path_3_i.png"}
+]
