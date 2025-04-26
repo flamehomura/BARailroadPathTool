@@ -169,7 +169,10 @@ class GridMap:
                         new_cost += int((new_path_cost[path_type] / path_limits[path_type - 1]) ** 2 * 500)
                     else:
                         new_cost -= int((new_path_cost[path_type] / path_limits[path_type - 1]) ** 2 * 500)
-                    if (current.x, current.y) in self.poi_grid_map:
+
+                    if (next_pos.x, next_pos.y) in self.poi_grid_map:
+                        new_cost -= 1000
+                    if (next_pos.x, next_pos.y) in self.fixed_grid_map:
                         new_cost -= 1000
                     new_path_coord = path_coord.copy()
                     new_path_coord.add((next_pos.x, next_pos.y))
@@ -181,9 +184,11 @@ class GridMap:
                     # print(f"Next: {next_pos}")
                     heapq.heappush(heap, (new_cost, next(counter), next_pos, new_path_cost, new_grids, path + [next_pos], new_path_coord))
 
+                    print(f"Current: {next_pos} costs: {new_cost} path: {path}")
+
                 else:
                     new_path_cost = path_cost.copy()
-                    new_cost = cost - 10000
+                    new_cost = cost
                     new_path_coord = path_coord.copy()
                     new_path_coord.add((next_pos.x, next_pos.y))
 
