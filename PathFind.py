@@ -184,7 +184,7 @@ class GridMap:
                     # print(f"Next: {next_pos}")
                     heapq.heappush(heap, (new_cost, next(counter), next_pos, new_path_cost, new_grids, path + [next_pos], new_path_coord))
 
-                    print(f"Current: {next_pos} costs: {new_cost} path: {path}")
+                    # print(f"Current: {next_pos} costs: {new_cost} path: {path}")
 
                 else:
                     new_path_cost = path_cost.copy()
