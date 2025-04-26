@@ -135,7 +135,7 @@ class GridMap:
         best_path = None
         best_used = 0
         if shortest:
-            best_used = path_limits[0] + path_limits[1] + path_limits[2]
+            best_used = path_limits[0] + path_limits[1] + path_limits[2] + 1
 
         while heap:
             cost, _, current, path_cost, grids, path, path_coord = heapq.heappop(heap)
