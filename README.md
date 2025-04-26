@@ -1,3 +1,7 @@
+新增关卡编辑器 Add Level Editor
+
+![readme](readme_level_editor.png)
+
 在config目录下，hexes.json里配置了各种地图块的样式和铁轨样式，不需要修改，levels.json里配置了每张地图的信息。<br>
 
 hexes.json里地图块样式解释如下：<br>
