@@ -49,7 +49,7 @@ class LevelJson:
 
     def new_level(self, level_name):
         if level_name not in self.json_data:
-            new_row = 8
+            new_row = 9
             new_col = 9
             created_level = LevelData([10, 10, 10], [[TileData(6, 0) for _ in range(new_col)] for _ in range(new_row)])
             self.json_data[level_name] = created_level
